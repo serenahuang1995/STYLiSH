@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stylish/bannerView.dart';
+import 'package:stylish/home/bannerView.dart';
 import 'package:stylish/model.dart';
-import 'package:stylish/categoryListView.dart';
+import 'package:stylish/home/categoryListView.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,38 +38,57 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<BannerModel> images =
-      List.generate(15, (_) => 'assets/images/banner.jpeg')
-          .map((path) => BannerModel(imageName: path))
-          .toList();
+  final List<String> colors = ['FF0000', 'FFD306', 'FFD9EC'];
+  final List<String> sizes = ['S', 'M', 'L'];
+  final List<String> images = [
+    'assets/images/product1.jpeg',
+    'assets/images/product2.jpeg',
+    'assets/images/product3.jpeg',
+    'assets/images/product4.jpeg'
+  ];
 
-  final List<CategoryModel> categories = [
+  late final List<CategoryModel> categories = [
     CategoryModel(
       title: '女裝',
       products: List.generate(
           5,
           (index) => ProductModel(
-              imageName: 'assets/images/item.jpeg',
+              id: DateTime.now().microsecondsSinceEpoch.toString(),
+              imageName: 'assets/images/item.png',
               item: 'UNIQLO 特級極輕羽絨外套',
-              price: 'NT 323')).toList(),
+              price: 'NT 323',
+              colors: colors,
+              sizes: sizes,
+              stocks: 10,
+              images: images)).toList(),
     ),
     CategoryModel(
       title: '男裝',
       products: List.generate(
           15,
           (index) => ProductModel(
-              imageName: 'assets/images/item.jpeg',
+              id: DateTime.now().microsecondsSinceEpoch.toString(),
+              imageName: 'assets/images/item.png',
               item: 'UNIQLO 特級極輕羽絨外套',
-              price: 'NT 323')).toList(),
+              price: 'NT 323',
+              colors: colors,
+              sizes: sizes,
+              stocks: 16,
+              images: images)).toList(),
     ),
     CategoryModel(
       title: '配件',
       products: List.generate(
           10,
           (index) => ProductModel(
-              imageName: 'assets/images/item.jpeg',
+              id: DateTime.now().microsecondsSinceEpoch.toString(),
+              imageName: 'assets/images/item.png',
               item: 'UNIQLO 特級極輕羽絨外套',
-              price: 'NT 323')).toList(),
+              price: 'NT 323',
+              colors: colors,
+              sizes: sizes,
+              stocks: 3,
+              images: images)).toList(),
     ),
   ];
 
@@ -85,23 +104,10 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Column(
           children: [
             BannerView(),
-            Expanded(child: CategoryView())
-            // List.generate()
-
-            // ListTile(
-            //   title: Text('123455677777777'),
-            // ),
-            // Expanded(
-            //   child: ListView.separated(
-            //     itemBuilder: itemBuilder,
-            //     separatorBuilder: (context, index) {
-            //       return const SizedBox(
-            //         height: 10,
-            //       );
-            //     },
-            //     itemCount: categories.length,
-            //   ),
-            // )
+            Expanded(
+                child: CategoryView(
+              categories: categories,
+            ))
           ],
         ));
   }

@@ -1,15 +1,16 @@
-
 import 'package:flutter/material.dart';
 import 'package:stylish/model.dart';
 
 class BannerView extends StatelessWidget {
-
   BannerView({
     super.key,
   });
 
   // final int itemCount;
-  final List<BannerModel> images = List.generate(15, (_) => 'assets/images/banner.jpeg') .map((path) => BannerModel(imageName: path)).toList();
+  final List<BannerModel> images =
+      List.generate(15, (_) => 'assets/images/banner.jpeg')
+          .map((path) => BannerModel(imageName: path))
+          .toList();
 
   @override
   Widget build(BuildContext context) {

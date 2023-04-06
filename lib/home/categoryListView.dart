@@ -5,35 +5,6 @@ import 'package:stylish/model.dart';
 class CategoryView extends StatelessWidget {
   final List<CategoryModel> categories;
   const CategoryView({Key? key, required this.categories}) : super(key: key);
-  // final List<CategoryModel> categories = [
-  //   CategoryModel(
-  //     title: '女裝',
-  //     products: List.generate(
-  //         5,
-  //         (index) => ProductModel(
-  //             imageName: 'assets/images/item.png',
-  //             item: 'UNIQLO 特級極輕羽絨外套',
-  //             price: 'NT 323')).toList(),
-  //   ),
-  //   CategoryModel(
-  //     title: '男裝',
-  //     products: List.generate(
-  //         15,
-  //         (index) => ProductModel(
-  //             imageName: 'assets/images/item.png',
-  //             item: 'UNIQLO 特級極輕羽絨外套',
-  //             price: 'NT 323')).toList(),
-  //   ),
-  //   CategoryModel(
-  //     title: '配件',
-  //     products: List.generate(
-  //         10,
-  //         (index) => ProductModel(
-  //             imageName: 'assets/images/item.png',
-  //             item: 'UNIQLO 特級極輕羽絨外套',
-  //             price: 'NT 323')).toList(),
-  //   ),
-  // ];
 
   @override
   Widget build(BuildContext context) {

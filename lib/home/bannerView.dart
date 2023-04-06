@@ -30,7 +30,7 @@ class BannerView extends StatelessWidget {
     );
   }
 
-  Widget? itemBuilder(BuildContext context, int index) {
+  Widget itemBuilder(BuildContext context, int index) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Image.asset(

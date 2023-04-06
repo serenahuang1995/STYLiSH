@@ -51,7 +51,6 @@ class _DescribeViewState extends State<DescribeView> {
       );
     } else {
       return Column(
-        // mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: const EdgeInsets.all(10.0),

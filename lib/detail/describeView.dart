@@ -100,9 +100,9 @@ class _DescribeViewState extends State<DescribeView> {
           height: 5,
         ),
         NornalText(
-            text: product.id.toString(),
-            size: 14,
-            color: Colors.black,
+          text: product.id.toString(),
+          size: 14,
+          color: Colors.black,
         ),
         const SizedBox(
           height: 20,
@@ -140,10 +140,14 @@ class _DescribeViewState extends State<DescribeView> {
             height: 50,
             child: TextButton(
               onPressed: () {},
-              child:
-              BoldText(text: '請選擇尺寸', size: 20, color: Colors.white),
+              child: (_count == product.stocks)
+                  ? BoldText(text: '已達庫存上限', size: 20, color: Colors.white)
+                  : BoldText(text: '請選擇尺寸', size: 20, color: Colors.white),
+              // BoldText(text: '請選擇尺寸', size: 20, color: Colors.white),
               style: TextButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 50, 49, 49)),
+                  backgroundColor: (_count == product.stocks)
+                      ? Colors.grey
+                      : Color.fromARGB(255, 50, 49, 49)),
             )),
         const SizedBox(
           height: 20,
@@ -241,8 +245,8 @@ extension DescribeViewExtension on _DescribeViewState {
           borderRadius: BorderRadius.circular(30), color: Colors.blueGrey),
       width: 30,
       child: Center(
-        child: NornalText(text: product.sizes[index] , size: 14, color: Colors.white)
-      ),
+          child: NornalText(
+              text: product.sizes[index], size: 14, color: Colors.white)),
     );
   }
 
@@ -284,7 +288,7 @@ extension DescribeViewExtension on _DescribeViewState {
           },
           child: Center(
             child: CircleAvatar(
-                backgroundColor: Colors.black,
+                backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
                 radius: 10,
                 child: Icon(
                   Icons.remove,
@@ -293,28 +297,32 @@ extension DescribeViewExtension on _DescribeViewState {
                 )),
           ),
           style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
+              backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
               shape: CircleBorder(),
-              fixedSize: const Size(20, 20)),
+              fixedSize: const Size(20, 20),
+              // enableFeedback: false
+              ),
         ),
         SizedBox(
-          width: 200,
-          child: 
-          NornalText(text: '$_count', size: 16, color: Colors.black, textAlign: TextAlign.center,)
-          
-          // Text(
-          //   '$_count',
-          //   style: const TextStyle(color: Colors.black, fontSize: 16),
-          //   textAlign: TextAlign.center,
-          // ),
-        ),
+            width: 200,
+            child: NornalText(
+              text: '$_count',
+              size: 16,
+              color: Colors.black,
+              textAlign: TextAlign.center,
+            )),
         ElevatedButton(
           onPressed: () {
-            increase();
+            if (_count == product.stocks) {
+              Null;
+            } else {
+              increase();
+            }
           },
           child: Center(
             child: CircleAvatar(
-                backgroundColor: Colors.black,
+                backgroundColor:
+                    (_count == product.stocks) ? Colors.grey : Colors.black,
                 radius: 10,
                 child: Icon(
                   Icons.add,
@@ -323,9 +331,12 @@ extension DescribeViewExtension on _DescribeViewState {
                 )),
           ),
           style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
+              backgroundColor:
+                  (_count == product.stocks) ? Colors.grey : Colors.black,
               shape: CircleBorder(),
-              fixedSize: const Size(20, 20)),
+              fixedSize: const Size(20, 20),
+              // enableFeedback: false
+              ),
         ),
       ],
     );

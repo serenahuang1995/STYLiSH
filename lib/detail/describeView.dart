@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
 import 'package:flutter/material.dart';
+import 'package:stylish/Extension/textExtension.dart';
 import 'package:stylish/model.dart';
 
 class DescribeView extends StatefulWidget {
@@ -29,16 +30,25 @@ class _DescribeViewState extends State<DescribeView> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDesktop = MediaQuery.of(context).size.width >= 600;
+    final bool isDesktop = MediaQuery.of(context).size.width >= 900;
     if (isDesktop) {
       return Row(
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
-            child: Image.asset(
-              'assets/images/product1.jpeg',
-              // fit: BoxFit.fill,
-              height: 400,
+            child: SizedBox(
+              height: 500,
+              width: 450,
+              child: PageView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: product.images.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Image.asset(
+                    product.images[index],
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
             ),
           ),
           Expanded(
@@ -54,9 +64,18 @@ class _DescribeViewState extends State<DescribeView> {
         children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Image.asset(
-              'assets/images/product1.jpeg',
-              fit: BoxFit.fill,
+            child: SizedBox(
+              height: 500,
+              child: PageView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: product.images.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Image.asset(
+                    product.images[index],
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
             ),
           ),
           Padding(
@@ -72,32 +91,26 @@ class _DescribeViewState extends State<DescribeView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          product.item,
-          style: const TextStyle(
-              color: Colors.black,
-              fontSize: 20,
-              decoration: TextDecoration.none),
+        BoldText(
+          text: product.item,
+          size: 22,
+          color: Colors.black,
         ),
         const SizedBox(
           height: 5,
         ),
-        Text(
-          product.id.toString(),
-          style: const TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              decoration: TextDecoration.none),
+        NornalText(
+            text: product.id.toString(),
+            size: 14,
+            color: Colors.black,
         ),
         const SizedBox(
           height: 20,
         ),
-        Text(
-          product.price,
-          style: const TextStyle(
-              color: Colors.black,
-              fontSize: 20,
-              decoration: TextDecoration.none),
+        BoldText(
+          text: product.price,
+          size: 22,
+          color: Colors.black,
         ),
         const SizedBox(
           height: 10,
@@ -108,45 +121,38 @@ class _DescribeViewState extends State<DescribeView> {
           color: Colors.grey,
         ),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
         configureProductColors(product),
         const SizedBox(
-          height: 10,
+          height: 30,
         ),
         configureProductSize(product),
         const SizedBox(
-          height: 10,
+          height: 30,
         ),
         congigureProductStock(),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
         SizedBox(
             width: width,
             height: 50,
             child: TextButton(
               onPressed: () {},
-              child: const Text(
-                '請選擇尺寸',
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
+              child:
+              BoldText(text: '請選擇尺寸', size: 20, color: Colors.white),
               style: TextButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 50, 49, 49)),
             )),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
-        Text(
-          describe,
-          style: const TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              decoration: TextDecoration.none),
-        )
+        NornalText(
+          text: describe,
+          size: 16,
+          color: Colors.black,
+        ),
       ],
     );
   }
@@ -158,23 +164,18 @@ extension DescribeViewExtension on _DescribeViewState {
     return Row(
       // ignore: prefer_const_literals_to_create_immutables
       children: [
-        const Text(
-          '顏色',
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              decoration: TextDecoration.none),
+        NornalText(
+          text: '顏色',
+          size: 14,
+          color: Colors.black,
         ),
         const SizedBox(
           width: 10,
         ),
-        const Text(
-          '|',
-          style: TextStyle(
-              color: Colors.grey,
-              fontSize: 16,
-              fontWeight: FontWeight.normal,
-              decoration: TextDecoration.none),
+        NornalText(
+          text: '|',
+          size: 16,
+          color: Colors.grey,
         ),
         const SizedBox(
           width: 10,
@@ -204,23 +205,18 @@ extension DescribeViewExtension on _DescribeViewState {
     return Row(
       // ignore: prefer_const_literals_to_create_immutables
       children: [
-        const Text(
-          '尺寸',
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              decoration: TextDecoration.none),
+        NornalText(
+          text: '尺寸',
+          size: 14,
+          color: Colors.black,
         ),
         const SizedBox(
           width: 10,
         ),
-        const Text(
-          '|',
-          style: TextStyle(
-              color: Colors.grey,
-              fontSize: 16,
-              fontWeight: FontWeight.normal,
-              decoration: TextDecoration.none),
+        NornalText(
+          text: '|',
+          size: 16,
+          color: Colors.grey,
         ),
         const SizedBox(
           width: 10,
@@ -245,20 +241,16 @@ extension DescribeViewExtension on _DescribeViewState {
           borderRadius: BorderRadius.circular(30), color: Colors.blueGrey),
       width: 30,
       child: Center(
-          child: Text(
-        product.sizes[index],
-        style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.normal,
-            decoration: TextDecoration.none),
-      )),
+        child: NornalText(text: product.sizes[index] , size: 14, color: Colors.white)
+      ),
     );
   }
 
   void increase() {
     setState(() {
-      _count++;
+      if (_count < product.stocks) {
+        _count++;
+      }
     });
   }
 
@@ -273,23 +265,18 @@ extension DescribeViewExtension on _DescribeViewState {
   Widget congigureProductStock() {
     return Row(
       children: [
-        const Text(
-          '數量',
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              decoration: TextDecoration.none),
+        NornalText(
+          text: '數量',
+          size: 14,
+          color: Colors.black,
         ),
         const SizedBox(
           width: 10,
         ),
-        const Text(
-          '|',
-          style: TextStyle(
-              color: Colors.grey,
-              fontSize: 16,
-              fontWeight: FontWeight.normal,
-              decoration: TextDecoration.none),
+        NornalText(
+          text: '|',
+          size: 16,
+          color: Colors.grey,
         ),
         ElevatedButton(
           onPressed: () {
@@ -312,11 +299,14 @@ extension DescribeViewExtension on _DescribeViewState {
         ),
         SizedBox(
           width: 200,
-          child: Text(
-            '$_count',
-            style: const TextStyle(color: Colors.black, fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
+          child: 
+          NornalText(text: '$_count', size: 16, color: Colors.black, textAlign: TextAlign.center,)
+          
+          // Text(
+          //   '$_count',
+          //   style: const TextStyle(color: Colors.black, fontSize: 16),
+          //   textAlign: TextAlign.center,
+          // ),
         ),
         ElevatedButton(
           onPressed: () {

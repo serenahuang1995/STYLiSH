@@ -15,15 +15,15 @@ class DetailPage extends StatelessWidget {
         title: Image.asset('assets/images/logo.png', height: 25),
         backgroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            final double width = isDesktop ? 800 : constraints.maxWidth - 20;
-            return Center(
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          final double width = isDesktop ? 900 : constraints.maxWidth - 20;
+          return SingleChildScrollView(
+            child: Center(
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 18),
                     child: Container(
                         constraints: BoxConstraints(maxWidth: width),
                         // color: Colors.pink,
@@ -41,9 +41,9 @@ class DetailPage extends StatelessWidget {
                   )
                 ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stylish/Extension/textExtension.dart';
 import 'package:stylish/detailPage.dart';
 import 'package:stylish/model.dart';
 
@@ -8,7 +9,7 @@ class CategoryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDesktop = MediaQuery.of(context).size.width >= 600;
+    final bool isDesktop = MediaQuery.of(context).size.width >= 950;
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: configureCategoryList(isDesktop),
@@ -27,11 +28,13 @@ class CategoryView extends StatelessWidget {
               children: [
                 Center(
                   child: ListTile(
-                    title: Text(
-                      category.title,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    title: 
+                    BoldText(text: category.title, size: 20, color: Colors.black, textAlign: TextAlign.center,)
+                    // Text(
+                    //   category.title,
+                    //   textAlign: TextAlign.center,
+                    //   style: const TextStyle(fontWeight: FontWeight.bold),
+                    // ),
                   ),
                 ),
                 Expanded(
@@ -62,11 +65,13 @@ class CategoryView extends StatelessWidget {
               children: [
                 Center(
                   child: ListTile(
-                    title: Text(
-                      category.title,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    title: BoldText(text: category.title, size: 20, color: Colors.black, textAlign: TextAlign.center,)
+
+                    // Text(
+                    //   category.title,
+                    //   textAlign: TextAlign.center,
+                    //   style: const TextStyle(fontWeight: FontWeight.bold),
+                    // ),
                   ),
                 ),
                 ListView.builder(
@@ -117,12 +122,15 @@ class CategoryView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  product.item,
-                ),
-                Text(
-                  product.price,
-                ),
+                NornalText(text: product.item, size: 16, color: Colors.black),
+                 NornalText(text: product.price, size: 16, color: Colors.black),
+
+                // Text(
+                //   product.item,
+                // ),
+                // Text(
+                //   product.price,
+                // ),
               ],
             ),
           )

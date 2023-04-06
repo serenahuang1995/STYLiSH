@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
+import 'package:stylish/Extension/textExtension.dart';
 import 'package:stylish/model.dart';
 
 class DetailView extends StatelessWidget {
@@ -18,7 +19,7 @@ class DetailView extends StatelessWidget {
           Row(
             children: [
               GradientText('細部說明',
-                  style: const TextStyle(fontSize: 14),
+                  style: const TextStyle(fontSize: 18),
                   colors: const [
                     Color.fromARGB(255, 3, 138, 248),
                     Color.fromARGB(255, 12, 235, 19)
@@ -34,24 +35,20 @@ class DetailView extends StatelessWidget {
               )
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 5, bottom: 5),
-            child: Text('手工印刷，每一件的圖案位置會有一點點不一樣'),
+          Padding(
+            padding: const EdgeInsets.only(top: 5, bottom: 5),
+            child: NornalText(text: '手工印刷，每一件的圖案位置會有一點點不一樣', size: 16, color: Colors.black),
+            // Text('手工印刷，每一件的圖案位置會有一點點不一樣'),
           ),
-          // Image.asset(
-          //   product.images[1],
-          //   // 'assets/images/product3.jpeg',
-          //   fit: BoxFit.fitWidth,
-          // )
           ListView.builder(
             itemBuilder: itemBuilder,
             itemCount: product.images.length,
+            // 因為 ListView 本身就是一個可滾動的 widget，DetailView 已經被放進可滾動的 SingleChildScrollView 中
+            // 嵌套了兩個可滾動的 widget 會報錯 ，所以要設定 shrinkWrap ＆ physics
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
           )
-          // 本來是用了List.builder
-          // 但因為 ListView 本身就是一個可滾動的 widget，DetailView 已經被放進可滾動的 SingleChildScrollView 中，嵌套了兩個可滾動的 widget 會報錯
-          //由於 ListView 本身就是一個可滾動的 widget，而你已經將 DetailView 放在一個可滾動的 SingleChildScrollView 中，所以這裡的錯誤就是因為嵌套了兩個可滾動的 widget
+          // 用 Wrap 一樣可以達到效果
           // Wrap(
           //   children: product.images.map((image) => Image.asset(image, fit: BoxFit.fitWidth,)).toList(),
           // )
@@ -63,7 +60,6 @@ class DetailView extends StatelessWidget {
   Widget itemBuilder(BuildContext context, int index) {
     return Image.asset(
       product.images[index],
-      // 'assets/images/product3.jpeg',
       fit: BoxFit.fitWidth,
     );
   }

@@ -43,7 +43,6 @@ class _MyHomePageState extends State<MyHomePage> {
         color: 'FFD306', 
         size: [
         SizeModel(size: 'S', stock: 3),
-        // SizeModel(size: 'M', stock: 9),
         SizeModel(size: 'L', stock: 12),
       ]),
       ColorModel(
@@ -51,15 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
         size: [
         SizeModel(size: 'S', stock: 0),
         SizeModel(size: 'M', stock: 1),
-        // SizeModel(size: 'L', stock: 2),
       ])
     ];
 
   final List<String> images = [
-    'assets/images/product1.jpeg',
+    // 'assets/images/product1.jpeg',
     'assets/images/product2.jpeg',
+    'assets/images/product4.jpeg',
     'assets/images/product3.jpeg',
-    'assets/images/product4.jpeg'
   ];
 
   late final List<CategoryModel> categories = [

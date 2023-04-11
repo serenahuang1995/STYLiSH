@@ -19,17 +19,17 @@ class _DescribeViewState extends State<DescribeView> {
   late final double width;
   final String describe =
       '實品顏色依單品照為主\n棉 100%\n厚薄：薄\n彈性：無\n素材產地 / 日本\n加工產地 / 中國';
+  late PageController _pageController;
   int _count = 1;
   int _isClickColorIndex = 0;
   int _isClickSizeIndex = 0;
-  bool _isClickColor = false;
-  bool _isClickSize = false;
 
   @override
   void initState() {
     super.initState();
     product = widget.product;
     width = widget.width;
+    _pageController = PageController(initialPage: _isClickColorIndex);
   }
 
   @override
@@ -44,6 +44,7 @@ class _DescribeViewState extends State<DescribeView> {
               height: 500,
               width: 450,
               child: PageView.builder(
+                controller: _pageController,
                 scrollDirection: Axis.horizontal,
                 itemCount: product.images.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -71,6 +72,7 @@ class _DescribeViewState extends State<DescribeView> {
             child: SizedBox(
               height: 500,
               child: PageView.builder(
+                controller: _pageController,
                 scrollDirection: Axis.horizontal,
                 itemCount: product.images.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -147,7 +149,6 @@ class _DescribeViewState extends State<DescribeView> {
               child: (_count == product.colors[_isClickColorIndex].size[_isClickSizeIndex].stock)
                   ? BoldText(text: '已達庫存上限', size: 20, color: Colors.white)
                   : BoldText(text: '請選擇尺寸', size: 20, color: Colors.white),
-              // BoldText(text: '請選擇尺寸', size: 20, color: Colors.white),
               style: TextButton.styleFrom(
                   backgroundColor: (_count == product.colors[_isClickColorIndex].size[_isClickSizeIndex].stock)
                       ? Colors.grey
@@ -196,10 +197,6 @@ extension DescribeViewExtension on _DescribeViewState {
               itemCount: product.colors.length,
               itemBuilder: colorItemBuilder),
         ),
-        // SizedBox(
-        //   height: 30,
-        // ),
-        // configureProductSize(product.colors[_isClickColorIndex])
       ],
     );
   }
@@ -207,14 +204,16 @@ extension DescribeViewExtension on _DescribeViewState {
   void _tapColor(int colorIndex) {
     setState(() {
       _isClickColorIndex = colorIndex;
-      // _isClickColor = true;
+      _isClickSizeIndex = 0;
+      _count = 1;
+      _pageController.jumpToPage(_isClickColorIndex);
     });
   }
 
-    void _tapSize(int sizeIndex) {
+  void _tapSize(int sizeIndex) {
     setState(() {
       _isClickSizeIndex = sizeIndex;
-      // _isClickSize = true;
+      _count = 1;
     });
   }
 
@@ -225,19 +224,12 @@ extension DescribeViewExtension on _DescribeViewState {
     child: Container(
       margin: const EdgeInsets.only(right: 10.0),
       width: 20,
-      // color: Color(int.parse(product.colors[index].color, radix: 16) + 0xFF000000),
       decoration: BoxDecoration(
         color: Color(int.parse(product.colors[index].color, radix: 16) + 0xFF000000),
         border: _isClickColorIndex == index ? Border.all(color: Colors.black, width: 2) : null
       ),
     ),
     );
-    // return Container(
-    //   margin: const EdgeInsets.only(right: 10.0),
-    //   width: 20,
-    //   // height: 10,
-    //   color: Color(int.parse(product.colors[index], radix: 16) + 0xFF000000),
-    // );
   }
 
   Widget configureProductSize(ColorModel color) {

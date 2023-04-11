@@ -29,8 +29,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<String> colors = ['FF0000', 'FFD306', 'FFD9EC'];
-  final List<String> sizes = ['S', 'M', 'L'];
+
+
+  final List<ColorModel> colors = [
+      ColorModel(
+        color: 'FF0000', 
+      size: [
+        SizeModel(size: 'S', stock: 10),
+        SizeModel(size: 'M', stock: 14),
+        SizeModel(size: 'L', stock: 5),
+      ]),
+      ColorModel(
+        color: 'FFD306', 
+        size: [
+        SizeModel(size: 'S', stock: 3),
+        // SizeModel(size: 'M', stock: 9),
+        SizeModel(size: 'L', stock: 12),
+      ]),
+      ColorModel(
+        color: 'FFD9EC', 
+        size: [
+        SizeModel(size: 'S', stock: 0),
+        SizeModel(size: 'M', stock: 1),
+        // SizeModel(size: 'L', stock: 2),
+      ])
+    ];
+
   final List<String> images = [
     'assets/images/product1.jpeg',
     'assets/images/product2.jpeg',
@@ -49,8 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
               item: 'UNIQLO 特級極輕羽絨外套',
               price: 'NT 323',
               colors: colors,
-              sizes: sizes,
-              stocks: 10,
+              // sizes: sizes,
+              // stocks: 10,
               images: images)).toList(),
     ),
     CategoryModel(
@@ -63,8 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
               item: 'UNIQLO 特級極輕羽絨外套',
               price: 'NT 323',
               colors: colors,
-              sizes: sizes,
-              stocks: 16,
+              // sizes: sizes,
+              // stocks: 16,
               images: images)).toList(),
     ),
     CategoryModel(
@@ -77,8 +101,8 @@ class _MyHomePageState extends State<MyHomePage> {
               item: 'UNIQLO 特級極輕羽絨外套',
               price: 'NT 323',
               colors: colors,
-              sizes: sizes,
-              stocks: 3,
+              // sizes: sizes,
+              // stocks: 3,
               images: images)).toList(),
     ),
   ];

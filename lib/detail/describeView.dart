@@ -20,6 +20,10 @@ class _DescribeViewState extends State<DescribeView> {
   final String describe =
       '實品顏色依單品照為主\n棉 100%\n厚薄：薄\n彈性：無\n素材產地 / 日本\n加工產地 / 中國';
   int _count = 1;
+  int _isClickColorIndex = 0;
+  int _isClickSizeIndex = 0;
+  bool _isClickColor = false;
+  bool _isClickSize = false;
 
   @override
   void initState() {
@@ -127,11 +131,11 @@ class _DescribeViewState extends State<DescribeView> {
         const SizedBox(
           height: 30,
         ),
-        configureProductSize(product),
+        configureProductSize(product.colors[_isClickColorIndex]),
         const SizedBox(
           height: 30,
         ),
-        congigureProductStock(),
+        congigureProductStock(product.colors[_isClickColorIndex].size[_isClickSizeIndex]),
         const SizedBox(
           height: 20,
         ),
@@ -140,12 +144,12 @@ class _DescribeViewState extends State<DescribeView> {
             height: 50,
             child: TextButton(
               onPressed: () {},
-              child: (_count == product.stocks)
+              child: (_count == product.colors[_isClickColorIndex].size[_isClickSizeIndex].stock)
                   ? BoldText(text: '已達庫存上限', size: 20, color: Colors.white)
                   : BoldText(text: '請選擇尺寸', size: 20, color: Colors.white),
               // BoldText(text: '請選擇尺寸', size: 20, color: Colors.white),
               style: TextButton.styleFrom(
-                  backgroundColor: (_count == product.stocks)
+                  backgroundColor: (_count == product.colors[_isClickColorIndex].size[_isClickSizeIndex].stock)
                       ? Colors.grey
                       : Color.fromARGB(255, 50, 49, 49)),
             )),
@@ -191,21 +195,52 @@ extension DescribeViewExtension on _DescribeViewState {
               scrollDirection: Axis.horizontal,
               itemCount: product.colors.length,
               itemBuilder: colorItemBuilder),
-        )
+        ),
+        // SizedBox(
+        //   height: 30,
+        // ),
+        // configureProductSize(product.colors[_isClickColorIndex])
       ],
     );
   }
 
-  Widget? colorItemBuilder(BuildContext context, int index) {
-    return Container(
-      margin: const EdgeInsets.only(right: 10.0),
-      width: 20,
-      // height: 10,
-      color: Color(int.parse(product.colors[index], radix: 16) + 0xFF000000),
-    );
+  void _tapColor(int colorIndex) {
+    setState(() {
+      _isClickColorIndex = colorIndex;
+      // _isClickColor = true;
+    });
   }
 
-  Widget configureProductSize(ProductModel product) {
+    void _tapSize(int sizeIndex) {
+    setState(() {
+      _isClickSizeIndex = sizeIndex;
+      // _isClickSize = true;
+    });
+  }
+
+
+  Widget? colorItemBuilder(BuildContext context, int index) {
+    return InkWell(
+    onTap: () => _tapColor(index),
+    child: Container(
+      margin: const EdgeInsets.only(right: 10.0),
+      width: 20,
+      // color: Color(int.parse(product.colors[index].color, radix: 16) + 0xFF000000),
+      decoration: BoxDecoration(
+        color: Color(int.parse(product.colors[index].color, radix: 16) + 0xFF000000),
+        border: _isClickColorIndex == index ? Border.all(color: Colors.black, width: 2) : null
+      ),
+    ),
+    );
+    // return Container(
+    //   margin: const EdgeInsets.only(right: 10.0),
+    //   width: 20,
+    //   // height: 10,
+    //   color: Color(int.parse(product.colors[index], radix: 16) + 0xFF000000),
+    // );
+  }
+
+  Widget configureProductSize(ColorModel color) {
     return Row(
       // ignore: prefer_const_literals_to_create_immutables
       children: [
@@ -230,29 +265,33 @@ extension DescribeViewExtension on _DescribeViewState {
           child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: product.sizes.length,
-              itemBuilder: sizeItemBuilder),
+              itemCount: color.size.length,
+              itemBuilder: sizeItemBuilder
+              ),
         )
       ],
     );
   }
 
   Widget? sizeItemBuilder(BuildContext context, int index) {
-    return Container(
-      margin: const EdgeInsets.only(right: 10.0),
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30), color: Colors.blueGrey),
-      width: 30,
-      child: Center(
-          child: NornalText(
-              text: product.sizes[index], size: 14, color: Colors.white)),
+    return InkWell(
+      onTap: () => _tapSize(index),
+      child: Container(
+        margin: const EdgeInsets.only(right: 10.0),
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30), color: _isClickSizeIndex == index ? Color.fromARGB(255, 193, 222, 245) : Colors.blueGrey),
+        width: 30,
+        child: Center(
+            child: NornalText(
+                text: product.colors[_isClickColorIndex].size[index].size, size: 14, color: Colors.white)),
+      ),
     );
   }
 
-  void increase() {
+  void increase(int stocks) {
     setState(() {
-      if (_count < product.stocks) {
+      if (_count < stocks) {
         _count++;
       }
     });
@@ -266,7 +305,7 @@ extension DescribeViewExtension on _DescribeViewState {
     });
   }
 
-  Widget congigureProductStock() {
+  Widget congigureProductStock(SizeModel size) {
     return Row(
       children: [
         NornalText(
@@ -277,15 +316,14 @@ extension DescribeViewExtension on _DescribeViewState {
         const SizedBox(
           width: 10,
         ),
+        // Divider()
         NornalText(
           text: '|',
           size: 16,
           color: Colors.grey,
         ),
         ElevatedButton(
-          onPressed: () {
-            decrease();
-          },
+          onPressed: (_count == 1) ? null : decrease,
           child: Center(
             child: CircleAvatar(
                 backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
@@ -312,17 +350,11 @@ extension DescribeViewExtension on _DescribeViewState {
               textAlign: TextAlign.center,
             )),
         ElevatedButton(
-          onPressed: () {
-            if (_count == product.stocks) {
-              Null;
-            } else {
-              increase();
-            }
-          },
+          onPressed: (_count == size.stock) ? null : () => increase(size.stock),
           child: Center(
             child: CircleAvatar(
                 backgroundColor:
-                    (_count == product.stocks) ? Colors.grey : Colors.black,
+                    (_count == size.stock) ? Colors.grey : Colors.black,
                 radius: 10,
                 child: Icon(
                   Icons.add,
@@ -332,10 +364,9 @@ extension DescribeViewExtension on _DescribeViewState {
           ),
           style: ElevatedButton.styleFrom(
               backgroundColor:
-                  (_count == product.stocks) ? Colors.grey : Colors.black,
+                  (_count == size.stock) ? Colors.grey : Colors.black,
               shape: CircleBorder(),
               fixedSize: const Size(20, 20),
-              // enableFeedback: false
               ),
         ),
       ],

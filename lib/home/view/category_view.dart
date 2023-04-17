@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:stylish/Extension/textExtension.dart';
-import 'package:stylish/detailPage.dart';
-import 'package:stylish/model.dart';
+import 'package:stylish/share/custom_text.dart';
+import 'package:stylish/extension/widget_modifier_extension.dart';
+import 'package:stylish/detail/detail_page.dart';
+import 'package:stylish/product_model.dart';
 
 class CategoryView extends StatelessWidget {
   final List<CategoryModel> categories;
@@ -10,10 +11,7 @@ class CategoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDesktop = MediaQuery.of(context).size.width >= 950;
-    return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
-      child: configureCategoryList(isDesktop),
-    );
+    return configureCategoryList(isDesktop).addPaddingOnly(right: 10, left: 10);
   }
 
   Widget configureCategoryList(bool isDesktop) {
@@ -30,11 +28,6 @@ class CategoryView extends StatelessWidget {
                   child: ListTile(
                     title: 
                     BoldText(text: category.title, size: 20, color: Colors.black, textAlign: TextAlign.center,)
-                    // Text(
-                    //   category.title,
-                    //   textAlign: TextAlign.center,
-                    //   style: const TextStyle(fontWeight: FontWeight.bold),
-                    // ),
                   ),
                 ),
                 Expanded(
@@ -66,18 +59,11 @@ class CategoryView extends StatelessWidget {
                 Center(
                   child: ListTile(
                     title: BoldText(text: category.title, size: 20, color: Colors.black, textAlign: TextAlign.center,)
-
-                    // Text(
-                    //   category.title,
-                    //   textAlign: TextAlign.center,
-                    //   style: const TextStyle(fontWeight: FontWeight.bold),
-                    // ),
                   ),
                 ),
                 ListView.builder(
                   itemBuilder: (context, itemIndex) {
-                    return configureProductCard(
-                        context, category.products[itemIndex]);
+                    return configureProductCard(context, category.products[itemIndex]);
                   },
                   itemCount: category.products.length,
                   physics: const NeverScrollableScrollPhysics(),
@@ -116,24 +102,14 @@ class CategoryView extends StatelessWidget {
               fit: BoxFit.fill,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                NornalText(text: product.item, size: 16, color: Colors.black),
-                 NornalText(text: product.price, size: 16, color: Colors.black),
-
-                // Text(
-                //   product.item,
-                // ),
-                // Text(
-                //   product.price,
-                // ),
-              ],
-            ),
-          )
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              NornalText(text: product.item, size: 16, color: Colors.black),
+              NornalText(text: product.price, size: 16, color: Colors.black),
+            ],
+          ).addPadding(10)
         ]),
       ),
     );

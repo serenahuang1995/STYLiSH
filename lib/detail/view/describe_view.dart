@@ -1,8 +1,12 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
 import 'package:flutter/material.dart';
-import 'package:stylish/Extension/textExtension.dart';
-import 'package:stylish/model.dart';
+import 'package:stylish/detail/cubit/product_cubit.dart';
+import 'package:stylish/networking/api.dart';
+import 'package:stylish/share/custom_text.dart';
+import 'package:stylish/extension/widget_modifier_extension.dart';
+import 'package:stylish/product_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DescribeView extends StatefulWidget {
   final ProductModel product;
@@ -23,13 +27,13 @@ class _DescribeViewState extends State<DescribeView> {
   int _count = 1;
   int _isClickColorIndex = 0;
   int _isClickSizeIndex = 0;
-
   @override
   void initState() {
     super.initState();
     product = widget.product;
     width = widget.width;
     _pageController = PageController(initialPage: _isClickColorIndex);
+    Api().getHttp();
   }
 
   @override
@@ -38,56 +42,45 @@ class _DescribeViewState extends State<DescribeView> {
     if (isDesktop) {
       return Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: SizedBox(
-              height: 500,
-              width: 450,
-              child: PageView.builder(
-                controller: _pageController,
-                scrollDirection: Axis.horizontal,
-                itemCount: product.images.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Image.asset(
-                    product.images[index],
-                    fit: BoxFit.cover,
-                  );
-                },
-              ),
+          SizedBox(
+            height: 500,
+            width: 450,
+            child: PageView.builder(
+              controller: _pageController,
+              scrollDirection: Axis.horizontal,
+              itemCount: product.images.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Image.asset(
+                  product.images[index],
+                  fit: BoxFit.cover,
+                );
+              },
             ),
-          ),
+          ).addPaddingOnly(left: 8),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10, right: 8),
-              child: configureDescribeView(product),
-            ),
+            child: configureDescribeView(product)
+                .addPaddingOnly(left: 10, right: 8),
           ),
         ],
       );
     } else {
       return Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SizedBox(
-              height: 500,
-              child: PageView.builder(
-                controller: _pageController,
-                scrollDirection: Axis.horizontal,
-                itemCount: product.images.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Image.asset(
-                    product.images[index],
-                    fit: BoxFit.cover,
-                  );
-                },
-              ),
+          SizedBox(
+            height: 500,
+            child: PageView.builder(
+              controller: _pageController,
+              scrollDirection: Axis.horizontal,
+              itemCount: product.images.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Image.asset(
+                  product.images[index],
+                  fit: BoxFit.cover,
+                );
+              },
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: configureDescribeView(product),
-          ),
+          ).addPadding(10),
+          configureDescribeView(product).addPaddingOnly(left: 10, right: 10),
         ],
       );
     }
@@ -137,7 +130,12 @@ class _DescribeViewState extends State<DescribeView> {
         const SizedBox(
           height: 30,
         ),
-        congigureProductStock(product.colors[_isClickColorIndex].size[_isClickSizeIndex]),
+        // BlocProvider(
+        //   create: (context) => CounterCubit(),
+        //   child: congigureProductStock(
+        //       product.colors[_isClickColorIndex].sizes[_isClickSizeIndex]),
+        // ),
+        congigureProductStock(product.colors[_isClickColorIndex].sizes[_isClickSizeIndex]),
         const SizedBox(
           height: 20,
         ),
@@ -146,11 +144,15 @@ class _DescribeViewState extends State<DescribeView> {
             height: 50,
             child: TextButton(
               onPressed: () {},
-              child: (_count == product.colors[_isClickColorIndex].size[_isClickSizeIndex].stock)
+              child: (_count ==
+                      product.colors[_isClickColorIndex]
+                          .sizes[_isClickSizeIndex].stock)
                   ? BoldText(text: '已達庫存上限', size: 20, color: Colors.white)
                   : BoldText(text: '請選擇尺寸', size: 20, color: Colors.white),
               style: TextButton.styleFrom(
-                  backgroundColor: (_count == product.colors[_isClickColorIndex].size[_isClickSizeIndex].stock)
+                  backgroundColor: (_count ==
+                          product.colors[_isClickColorIndex]
+                              .sizes[_isClickSizeIndex].stock)
                       ? Colors.grey
                       : Color.fromARGB(255, 50, 49, 49)),
             )),
@@ -217,18 +219,19 @@ extension DescribeViewExtension on _DescribeViewState {
     });
   }
 
-
   Widget? colorItemBuilder(BuildContext context, int index) {
     return InkWell(
-    onTap: () => _tapColor(index),
-    child: Container(
-      margin: const EdgeInsets.only(right: 10.0),
-      width: 20,
-      decoration: BoxDecoration(
-        color: Color(int.parse(product.colors[index].color, radix: 16) + 0xFF000000),
-        border: _isClickColorIndex == index ? Border.all(color: Colors.black, width: 2) : null
+      onTap: () => _tapColor(index),
+      child: Container(
+        margin: const EdgeInsets.only(right: 10.0),
+        width: 20,
+        decoration: BoxDecoration(
+            color: Color(
+                int.parse(product.colors[index].color, radix: 16) + 0xFF000000),
+            border: _isClickColorIndex == index
+                ? Border.all(color: Colors.black, width: 2)
+                : null),
       ),
-    ),
     );
   }
 
@@ -257,9 +260,8 @@ extension DescribeViewExtension on _DescribeViewState {
           child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: color.size.length,
-              itemBuilder: sizeItemBuilder
-              ),
+              itemCount: color.sizes.length,
+              itemBuilder: sizeItemBuilder),
         )
       ],
     );
@@ -272,33 +274,42 @@ extension DescribeViewExtension on _DescribeViewState {
         margin: const EdgeInsets.only(right: 10.0),
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30), color: _isClickSizeIndex == index ? Color.fromARGB(255, 193, 222, 245) : Colors.blueGrey),
+            borderRadius: BorderRadius.circular(30),
+            color: _isClickSizeIndex == index
+                ? Color.fromARGB(255, 193, 222, 245)
+                : Colors.blueGrey),
         width: 30,
         child: Center(
             child: NornalText(
-                text: product.colors[_isClickColorIndex].size[index].size, size: 14, color: Colors.white)),
+                text: product.colors[_isClickColorIndex].sizes[index].size,
+                size: 14,
+                color: Colors.white)),
       ),
     );
   }
 
-  void increase(int stocks) {
-    setState(() {
-      if (_count < stocks) {
-        _count++;
-      }
-    });
-  }
+  // void increase(int stocks) {
+  //   setState(() {
+  //     if (_count < stocks) {
+  //       _count++;
+  //     }
+  //   });
+  // }
 
-  void decrease() {
-    setState(() {
-      if (_count > 1) {
-        _count--;
-      }
-    });
-  }
+  // void decrease() {
+  //   setState(() {
+  //     if (_count > 1) {
+  //       _count--;
+  //     }
+  //   });
+  // }
 
   Widget congigureProductStock(SizeModel size) {
-    return Row(
+    // final counterCubit = BlocProvider.of<CounterCubit>(context);
+
+    return BlocBuilder<CounterCubit, int>(
+      builder: (context, state) {
+           return Row(
       children: [
         NornalText(
           text: '數量',
@@ -315,7 +326,7 @@ extension DescribeViewExtension on _DescribeViewState {
           color: Colors.grey,
         ),
         ElevatedButton(
-          onPressed: (_count == 1) ? null : decrease,
+          onPressed: /*(_count == 1) ? null : decrease*/() => context.read<CounterCubit>().decrement(),
           child: Center(
             child: CircleAvatar(
                 backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
@@ -327,22 +338,22 @@ extension DescribeViewExtension on _DescribeViewState {
                 )),
           ),
           style: ElevatedButton.styleFrom(
-              backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
-              shape: CircleBorder(),
-              fixedSize: const Size(20, 20),
-              // enableFeedback: false
-              ),
+            backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
+            shape: CircleBorder(),
+            fixedSize: const Size(20, 20),
+            // enableFeedback: false
+          ),
         ),
         SizedBox(
             width: 200,
             child: NornalText(
-              text: '$_count',
+              text: '$state',
               size: 16,
               color: Colors.black,
               textAlign: TextAlign.center,
             )),
         ElevatedButton(
-          onPressed: (_count == size.stock) ? null : () => increase(size.stock),
+          onPressed: /*(_count == size.stock) ? null : () => increase(size.stock)*/() => context.read<CounterCubit>().increment(),
           child: Center(
             child: CircleAvatar(
                 backgroundColor:
@@ -355,13 +366,81 @@ extension DescribeViewExtension on _DescribeViewState {
                 )),
           ),
           style: ElevatedButton.styleFrom(
-              backgroundColor:
-                  (_count == size.stock) ? Colors.grey : Colors.black,
-              shape: CircleBorder(),
-              fixedSize: const Size(20, 20),
-              ),
+            backgroundColor:
+                (_count == size.stock) ? Colors.grey : Colors.black,
+            shape: CircleBorder(),
+            fixedSize: const Size(20, 20),
+          ),
         ),
       ],
     );
+      },
+    );
+
+    // return Row(
+    //   children: [
+    //     NornalText(
+    //       text: '數量',
+    //       size: 14,
+    //       color: Colors.black,
+    //     ),
+    //     const SizedBox(
+    //       width: 10,
+    //     ),
+    //     // Divider()
+    //     NornalText(
+    //       text: '|',
+    //       size: 16,
+    //       color: Colors.grey,
+    //     ),
+    //     ElevatedButton(
+    //       onPressed: (_count == 1) ? null : decrease,
+    //       child: Center(
+    //         child: CircleAvatar(
+    //             backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
+    //             radius: 10,
+    //             child: Icon(
+    //               Icons.remove,
+    //               color: Colors.white,
+    //               size: 15,
+    //             )),
+    //       ),
+    //       style: ElevatedButton.styleFrom(
+    //         backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
+    //         shape: CircleBorder(),
+    //         fixedSize: const Size(20, 20),
+    //         // enableFeedback: false
+    //       ),
+    //     ),
+    //     SizedBox(
+    //         width: 200,
+    //         child: NornalText(
+    //           text: '$_count',
+    //           size: 16,
+    //           color: Colors.black,
+    //           textAlign: TextAlign.center,
+    //         )),
+    //     ElevatedButton(
+    //       onPressed: (_count == size.stock) ? null : () => increase(size.stock),
+    //       child: Center(
+    //         child: CircleAvatar(
+    //             backgroundColor:
+    //                 (_count == size.stock) ? Colors.grey : Colors.black,
+    //             radius: 10,
+    //             child: Icon(
+    //               Icons.add,
+    //               color: Colors.white,
+    //               size: 15,
+    //             )),
+    //       ),
+    //       style: ElevatedButton.styleFrom(
+    //         backgroundColor:
+    //             (_count == size.stock) ? Colors.grey : Colors.black,
+    //         shape: CircleBorder(),
+    //         fixedSize: const Size(20, 20),
+    //       ),
+    //     ),
+    //   ],
+    // );
   }
 }

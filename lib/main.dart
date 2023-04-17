@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:stylish/home/bannerView.dart';
-import 'package:stylish/model.dart';
-import 'package:stylish/home/categoryListView.dart';
+import 'package:stylish/home/view/banner_view.dart';
+import 'package:stylish/product_model.dart';
+import 'package:stylish/home/view/category_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,20 +34,20 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<ColorModel> colors = [
       ColorModel(
         color: 'FF0000', 
-      size: [
+      sizes: [
         SizeModel(size: 'S', stock: 10),
         SizeModel(size: 'M', stock: 14),
         SizeModel(size: 'L', stock: 5),
       ]),
       ColorModel(
         color: 'FFD306', 
-        size: [
+        sizes: [
         SizeModel(size: 'S', stock: 3),
         SizeModel(size: 'L', stock: 12),
       ]),
       ColorModel(
         color: 'FFD9EC', 
-        size: [
+        sizes: [
         SizeModel(size: 'S', stock: 0),
         SizeModel(size: 'M', stock: 1),
       ])

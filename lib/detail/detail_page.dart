@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:stylish/detail/describeView.dart';
-import 'package:stylish/detail/detailView.dart';
-import 'package:stylish/model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stylish/detail/cubit/product_cubit.dart';
+import 'package:stylish/extension/widget_modifier_extension.dart';
+import 'package:stylish/detail/view/describe_view.dart';
+import 'package:stylish/detail/view/detail_view.dart';
+import 'package:stylish/product_model.dart';
 
 class DetailPage extends StatelessWidget {
   final ProductModel product;
@@ -22,23 +25,17 @@ class DetailPage extends StatelessWidget {
             child: Center(
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 18),
+                  BlocProvider(
+                    create: (context) => CounterCubit(),
                     child: Container(
                         constraints: BoxConstraints(maxWidth: width),
-                        // color: Colors.pink,
-                        child: DescribeView(
-                          product: product,
-                          width: width,
-                        )),
+                        child: DescribeView(product: product,width: width,)
+                        ).addPadding(8),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                        constraints: BoxConstraints(maxWidth: width),
-                        // color: Colors.pink,
-                        child: DetailView(product: product, width: width)),
-                  )
+                  Container(
+                      constraints: BoxConstraints(maxWidth: width),
+                      child: DetailView(product: product, width: width)
+                      ).addPadding(8)
                 ],
               ),
             ),

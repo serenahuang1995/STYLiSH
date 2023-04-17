@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stylish/model.dart';
+import 'package:stylish/product_model.dart';
 
 class BannerView extends StatelessWidget {
   BannerView({

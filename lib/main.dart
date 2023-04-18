@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:stylish/home/view/banner_view.dart';
+import 'package:stylish/networking/api.dart';
 import 'package:stylish/product_model.dart';
 import 'package:stylish/home/view/category_view.dart';
+import 'package:dio/dio.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,29 +31,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+  var list = Api().getHttp();
 
   final List<ColorModel> colors = [
-      ColorModel(
-        color: 'FF0000', 
-      sizes: [
-        SizeModel(size: 'S', stock: 10),
-        SizeModel(size: 'M', stock: 14),
-        SizeModel(size: 'L', stock: 5),
-      ]),
-      ColorModel(
-        color: 'FFD306', 
-        sizes: [
-        SizeModel(size: 'S', stock: 3),
-        SizeModel(size: 'L', stock: 12),
-      ]),
-      ColorModel(
-        color: 'FFD9EC', 
-        sizes: [
-        SizeModel(size: 'S', stock: 0),
-        SizeModel(size: 'M', stock: 1),
-      ])
-    ];
+    ColorModel(color: 'FF0000', sizes: [
+      SizeModel(size: 'S', stock: 10),
+      SizeModel(size: 'M', stock: 14),
+      SizeModel(size: 'L', stock: 5),
+    ]),
+    ColorModel(color: 'FFD306', sizes: [
+      SizeModel(size: 'S', stock: 3),
+      SizeModel(size: 'L', stock: 12),
+    ]),
+    ColorModel(color: 'FFD9EC', sizes: [
+      SizeModel(size: 'S', stock: 0),
+      SizeModel(size: 'M', stock: 1),
+    ])
+  ];
 
   final List<String> images = [
     // 'assets/images/product1.jpeg',
@@ -116,10 +112,25 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             BannerView(),
             Expanded(
-                child: CategoryView(
-              categories: categories,
-            ))
+              child: FutureBuilder<List<Product>>(
+                  future: Api().getHttp(), builder: builder),
+            )
           ],
         ));
+  }
+
+  Widget builder(BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
+    if (snapshot.hasData && snapshot.data != null) {
+    // snapshot.requireData.map((product) => product).toList();     
+    print(snapshot.requireData.first.title);
+    // return Text('fetch categories from API');
+      return CategoryView(
+        products: snapshot.requireData,
+      );
+    } else if (snapshot.hasError) {
+      return Text('Failed to fetch categories from API');
+    } else {
+      return CircularProgressIndicator();
+    }
   }
 }

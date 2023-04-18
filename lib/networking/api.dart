@@ -4,10 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:stylish/product_model.dart';
 
 class Api {
-  // late Dio dio;
-
-  late Dio dio = Dio(BaseOptions(baseUrl: 'https://api.appworks-school.tw/api/1.0'));
-
 
   // Future<Map<String, dynamic>> fetch(String service,
   //     {Map<String, dynamic>? }) async {
@@ -20,24 +16,19 @@ class Api {
   //   }
   // }
 
-  void getHttp() async {
+      //   var jsonResponse = response.data;
+      // ProductList list = ProductList.fromJson(json.decode(jsonResponse));
+      // return list.data;
+
+  Future<List<Product>> getHttp() async {
     try {
-      Response response = await dio.get('/products/all');
-      List<dynamic> jsonList = response.data['data'];
-      // List<Product> productList = jsonList.map((json) => Product.fromJson(json)).toList();
-      // return ProductList(data: productList);
-      // var data = jsonDecode(jsonList.toList().toString());
-      // var list =ProductList.fromJson(data);
-      print(jsonList);
-       
-      // for (var item in jsonList) {
-      //   Product product = Product.fromJson(item);
-      //   print(product);
-      // }
-
-
+      Response response = await Dio().get('https://api.appworks-school.tw/api/1.0/products/all');
+      Map<String, dynamic> data = jsonDecode(response.toString());
+      var list = ProductList.fromJson(data);
+      return list.data;
     } catch (e) {
       print(e);
+      return [];
     }
   }
 }

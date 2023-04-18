@@ -33,7 +33,7 @@ class _DescribeViewState extends State<DescribeView> {
     product = widget.product;
     width = widget.width;
     _pageController = PageController(initialPage: _isClickColorIndex);
-    Api().getHttp();
+    // Api().getHttp();
   }
 
   @override

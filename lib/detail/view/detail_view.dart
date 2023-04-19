@@ -5,7 +5,8 @@ import 'package:stylish/extension/widget_modifier_extension.dart';
 import 'package:stylish/product_model.dart';
 
 class DetailView extends StatelessWidget {
-  final ProductModel product;
+  // final ProductModel product;
+  final Product product;
   final double width;
   const DetailView({Key? key, required this.product, required this.width})
       : super(key: key);
@@ -31,7 +32,7 @@ class DetailView extends StatelessWidget {
             )
           ],
         ),
-        NornalText(text: '手工印刷，每一件的圖案位置會有一點點不一樣', size: 16, color: Colors.black).addPaddingOnly(top: 5, bottom: 5),
+        NornalText(text: product.story, size: 16, color: Colors.black).addPaddingOnly(top: 5, bottom: 5),
         ListView.builder(
           itemBuilder: itemBuilder,
           itemCount: product.images.length,
@@ -49,7 +50,7 @@ class DetailView extends StatelessWidget {
   }
 
   Widget itemBuilder(BuildContext context, int index) {
-    return Image.asset(
+    return Image.network(
       product.images[index],
       fit: BoxFit.fitWidth,
     );

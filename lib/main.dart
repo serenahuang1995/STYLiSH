@@ -31,7 +31,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var list = Api().getHttp();
 
   final List<ColorModel> colors = [
     ColorModel(color: 'FF0000', sizes: [
@@ -108,29 +107,30 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Image.asset('assets/images/logo.png', height: 25),
           backgroundColor: Colors.white,
         ),
-        body: Column(
+        body: 
+        Column(
           children: [
             BannerView(),
             Expanded(
-              child: FutureBuilder<List<Product>>(
-                  future: Api().getHttp(), builder: builder),
+              child: CategoryView(),
             )
           ],
-        ));
+        )
+        );
   }
 
-  Widget builder(BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
-    if (snapshot.hasData && snapshot.data != null) {
-    // snapshot.requireData.map((product) => product).toList();     
-    print(snapshot.requireData.first.title);
-    // return Text('fetch categories from API');
-      return CategoryView(
-        products: snapshot.requireData,
-      );
-    } else if (snapshot.hasError) {
-      return Text('Failed to fetch categories from API');
-    } else {
-      return CircularProgressIndicator();
-    }
-  }
+  // Widget builder(BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
+  //   if (snapshot.hasData && snapshot.data != null) {
+  //   // snapshot.requireData.map((product) => product).toList();     
+  //   print(snapshot.requireData.first.title);
+  //   // return Text('fetch categories from API');
+  //     return CategoryView(
+  //       products: snapshot.requireData,
+  //     );
+  //   } else if (snapshot.hasError) {
+  //     return Text('Failed to fetch categories from API');
+  //   } else {
+  //     return CircularProgressIndicator();
+  //   }
+  // }
 }

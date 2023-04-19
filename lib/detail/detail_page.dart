@@ -7,7 +7,7 @@ import 'package:stylish/detail/view/detail_view.dart';
 import 'package:stylish/product_model.dart';
 
 class DetailPage extends StatelessWidget {
-  final ProductModel product;
+  final Product product;
   const DetailPage({Key? key, required this.product}) : super(key: key);
 
   @override

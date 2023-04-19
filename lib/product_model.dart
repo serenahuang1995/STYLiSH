@@ -58,7 +58,7 @@ class SizeModel {
 @JsonSerializable(explicitToJson: true)
 class ProductList {
   final List<Product> data;
-  final int next_paging;
+  final int? next_paging;
 
   ProductList({required this.data, required this.next_paging});
 

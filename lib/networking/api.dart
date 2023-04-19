@@ -20,9 +20,33 @@ class Api {
       // ProductList list = ProductList.fromJson(json.decode(jsonResponse));
       // return list.data;
 
-  Future<List<Product>> getHttp() async {
+  Future<List<Product>> getMenProduct() async {
     try {
-      Response response = await Dio().get('https://api.appworks-school.tw/api/1.0/products/all');
+      Response response = await Dio().get('https://api.appworks-school.tw/api/1.0/products/men');
+      Map<String, dynamic> data = jsonDecode(response.toString());
+      var list = ProductList.fromJson(data);
+      return list.data;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+    Future<List<Product>> getWomenProduct() async {
+    try {
+      Response response = await Dio().get('https://api.appworks-school.tw/api/1.0/products/women');
+      Map<String, dynamic> data = jsonDecode(response.toString());
+      var list = ProductList.fromJson(data);
+      return list.data;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+    Future<List<Product>> getAccessoryProduct() async {
+    try {
+      Response response = await Dio().get('https://api.appworks-school.tw/api/1.0/products/accessories');
       Map<String, dynamic> data = jsonDecode(response.toString());
       var list = ProductList.fromJson(data);
       return list.data;

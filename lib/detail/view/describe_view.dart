@@ -2,11 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:stylish/detail/cubit/product_cubit.dart';
-import 'package:stylish/networking/api.dart';
 import 'package:stylish/share/custom_text.dart';
 import 'package:stylish/extension/widget_modifier_extension.dart';
 import 'package:stylish/product_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_tappay/flutter_tappay.dart';
 
 class DescribeView extends StatefulWidget {
   // final ProductModel product;
@@ -21,20 +21,77 @@ class DescribeView extends StatefulWidget {
 }
 
 class _DescribeViewState extends State<DescribeView> {
+  // FlutterTappay payer = FlutterTappay();
   late final Product product;
   late final double width;
-  // final String describe =
-      // '實品顏色依單品照為主\n棉 100%\n厚薄：薄\n彈性：無\n素材產地 / 日本\n加工產地 / 中國';
   late PageController _pageController;
   int _count = 1;
   int _isClickColorIndex = 0;
   int _isClickSizeIndex = 0;
+
   @override
   void initState() {
     super.initState();
     product = widget.product;
     width = widget.width;
     _pageController = PageController(initialPage: _isClickColorIndex);
+    // payer
+    //     .init()
+    //     .then((_) {
+    //   setState(() {
+    //     // prepared = true;
+    //   });
+    // });
+
+// payer.validate(
+//         cardNumber: 4111111111111111.toString(),
+//         dueMonth: 12.toString(),
+//         dueYear: 23.toString(),
+//         ccv: 123.toString(),
+//       );
+    // .then((validationResult) {
+    //   bool cardValid = validationResult.isCardNumberValid;
+    //   bool dateValid = validationResult.isExpiryDateValid;
+    //   bool ccvValid = validationResult.isCCVValid;
+    //   _totalValid = cardValid && ccvValid && dateValid;
+    //   if(cardValid == true)
+    //     _isCardNumberValid = true;
+    //   else
+    //     _isCardNumberValid = _cardNumber.text != "" ? false : true;
+    //   if(ccvValid == true)
+    //     _isCardCCVValid = true;
+    //   else
+    //     _isCardCCVValid = _cardCCV.text != "" ? false : true;
+    //   if(dateValid == true) {
+    //     _isCardYearValid = true;
+    //     _isCardMonthValid = true;
+    //   } else {
+    //     _isCardYearValid = _cardYear.text != "" ? false : true;
+    //     _isCardMonthValid = _cardMonth.text != "" ? false : true;
+    //   }
+
+    //   setState(() {
+    //   });
+    // });
+
+// get token
+    // try {
+    //   TappayTokenResponse response = await payer.sendToken(
+    //     cardNumber: 4111111111111111.toString(),
+    //     dueYear: 12.toString(),
+    //     dueMonth: 23.toString(),
+    //     ccv: 123.toString(),
+    //   );
+    //   setState(() {
+    //     _token = response.prime;
+    //   });
+    // } catch(err) {
+    //   Scaffold.of(context).showSnackBar(
+    //       SnackBar(
+    //           content: Text("Payment error: ${err.toString()}")
+    //       )
+    //   );
+    // }
   }
 
   @override
@@ -140,21 +197,21 @@ class _DescribeViewState extends State<DescribeView> {
             height: 50,
             child: TextButton(
               onPressed: () {},
-              child: (_count ==
-                      product.variants[_isClickSizeIndex].stock)
+              child: (_count == product.variants[_isClickSizeIndex].stock)
                   ? BoldText(text: '已達庫存上限', size: 20, color: Colors.white)
-                  : BoldText(text: '請選擇尺寸', size: 20, color: Colors.white),
+                  : BoldText(text: '購買', size: 20, color: Colors.white),
               style: TextButton.styleFrom(
-                  backgroundColor: (_count ==
-                          product.variants[_isClickSizeIndex].stock)
-                      ? Colors.grey
-                      : Color.fromARGB(255, 50, 49, 49)),
+                  backgroundColor:
+                      (_count == product.variants[_isClickSizeIndex].stock)
+                          ? Colors.grey
+                          : Color.fromARGB(255, 50, 49, 49)),
             )),
         const SizedBox(
           height: 20,
         ),
         NornalText(
-          text: '${product.description}\n${product.note}\n${product.place}\n${product.texture}\n${product.wash}',
+          text:
+              '${product.description}\n${product.note}\n${product.place}\n${product.texture}\n${product.wash}',
           size: 16,
           color: Colors.black,
         ),
@@ -283,75 +340,72 @@ extension DescribeViewExtension on _DescribeViewState {
   }
 
   Widget congigureProductStock(Variant variant) {
-
     return BlocBuilder<CounterCubit, int>(
       builder: (context, state) {
-           return Row(
-      children: [
-        NornalText(
-          text: '數量',
-          size: 14,
-          color: Colors.black,
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        NornalText(
-          text: '|',
-          size: 16,
-          color: Colors.grey,
-        ),
-        ElevatedButton(
-          onPressed: () => context.read<CounterCubit>().decrement(),
-          child: Center(
-            child: CircleAvatar(
-                backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
-                radius: 10,
-                child: Icon(
-                  Icons.remove,
-                  color: Colors.white,
-                  size: 15,
-                )),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
-            shape: CircleBorder(),
-            fixedSize: const Size(20, 20),
-          ),
-        ),
-        SizedBox(
-            width: 200,
-            child: NornalText(
-              text: '$state',
-              size: 16,
+        return Row(
+          children: [
+            NornalText(
+              text: '數量',
+              size: 14,
               color: Colors.black,
-              textAlign: TextAlign.center,
-            )),
-        ElevatedButton(
-          onPressed: () => context.read<CounterCubit>().increment(),
-          child: Center(
-            child: CircleAvatar(
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            NornalText(
+              text: '|',
+              size: 16,
+              color: Colors.grey,
+            ),
+            ElevatedButton(
+              onPressed: () => context.read<CounterCubit>().decrement(),
+              child: Center(
+                child: CircleAvatar(
+                    backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
+                    radius: 10,
+                    child: Icon(
+                      Icons.remove,
+                      color: Colors.white,
+                      size: 15,
+                    )),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: (_count == 1) ? Colors.grey : Colors.black,
+                shape: CircleBorder(),
+                fixedSize: const Size(20, 20),
+              ),
+            ),
+            SizedBox(
+                width: 200,
+                child: NornalText(
+                  text: '$state',
+                  size: 16,
+                  color: Colors.black,
+                  textAlign: TextAlign.center,
+                )),
+            ElevatedButton(
+              onPressed: () => context.read<CounterCubit>().increment(),
+              child: Center(
+                child: CircleAvatar(
+                    backgroundColor:
+                        (_count == variant.stock) ? Colors.grey : Colors.black,
+                    radius: 10,
+                    child: Icon(
+                      Icons.add,
+                      color: Colors.white,
+                      size: 15,
+                    )),
+              ),
+              style: ElevatedButton.styleFrom(
                 backgroundColor:
                     (_count == variant.stock) ? Colors.grey : Colors.black,
-                radius: 10,
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 15,
-                )),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor:
-                (_count == variant.stock) ? Colors.grey : Colors.black,
-            shape: CircleBorder(),
-            fixedSize: const Size(20, 20),
-          ),
-        ),
-      ],
-    );
+                shape: CircleBorder(),
+                fixedSize: const Size(20, 20),
+              ),
+            ),
+          ],
+        );
       },
     );
-  
-
   }
 }

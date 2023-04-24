@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:stylish/detail/cubit/product_cubit.dart';
 import 'package:stylish/share/custom_text.dart';
@@ -35,63 +37,6 @@ class _DescribeViewState extends State<DescribeView> {
     product = widget.product;
     width = widget.width;
     _pageController = PageController(initialPage: _isClickColorIndex);
-    // payer
-    //     .init()
-    //     .then((_) {
-    //   setState(() {
-    //     // prepared = true;
-    //   });
-    // });
-
-// payer.validate(
-//         cardNumber: 4111111111111111.toString(),
-//         dueMonth: 12.toString(),
-//         dueYear: 23.toString(),
-//         ccv: 123.toString(),
-//       );
-    // .then((validationResult) {
-    //   bool cardValid = validationResult.isCardNumberValid;
-    //   bool dateValid = validationResult.isExpiryDateValid;
-    //   bool ccvValid = validationResult.isCCVValid;
-    //   _totalValid = cardValid && ccvValid && dateValid;
-    //   if(cardValid == true)
-    //     _isCardNumberValid = true;
-    //   else
-    //     _isCardNumberValid = _cardNumber.text != "" ? false : true;
-    //   if(ccvValid == true)
-    //     _isCardCCVValid = true;
-    //   else
-    //     _isCardCCVValid = _cardCCV.text != "" ? false : true;
-    //   if(dateValid == true) {
-    //     _isCardYearValid = true;
-    //     _isCardMonthValid = true;
-    //   } else {
-    //     _isCardYearValid = _cardYear.text != "" ? false : true;
-    //     _isCardMonthValid = _cardMonth.text != "" ? false : true;
-    //   }
-
-    //   setState(() {
-    //   });
-    // });
-
-// get token
-    // try {
-    //   TappayTokenResponse response = await payer.sendToken(
-    //     cardNumber: 4111111111111111.toString(),
-    //     dueYear: 12.toString(),
-    //     dueMonth: 23.toString(),
-    //     ccv: 123.toString(),
-    //   );
-    //   setState(() {
-    //     _token = response.prime;
-    //   });
-    // } catch(err) {
-    //   Scaffold.of(context).showSnackBar(
-    //       SnackBar(
-    //           content: Text("Payment error: ${err.toString()}")
-    //       )
-    //   );
-    // }
   }
 
   @override
@@ -287,6 +232,8 @@ extension DescribeViewExtension on _DescribeViewState {
   }
 
   Widget configureProductSize(Product product) {
+    final List<Variant> list = product.variants.where((variant) => variant.color_code == product.colors[_isClickColorIndex].code ).toList();
+    log(list.toString());
     return Row(
       // ignore: prefer_const_literals_to_create_immutables
       children: [
@@ -311,15 +258,10 @@ extension DescribeViewExtension on _DescribeViewState {
           child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: product.sizes.length,
-              itemBuilder: sizeItemBuilder),
-        )
-      ],
-    );
-  }
-
-  Widget? sizeItemBuilder(BuildContext context, int index) {
-    return InkWell(
+              itemCount: list.length,
+              itemBuilder: (BuildContext context, int index)
+              {
+                 return InkWell(
       onTap: () => _tapSize(index),
       child: Container(
         margin: const EdgeInsets.only(right: 10.0),
@@ -332,12 +274,38 @@ extension DescribeViewExtension on _DescribeViewState {
         width: 30,
         child: Center(
             child: NornalText(
-                text: product.variants[_isClickColorIndex].size,
+                text: list[index].size,
                 size: 14,
                 color: Colors.white)),
       ),
     );
+              }
+              ),
+        )
+      ],
+    );
   }
+
+  // Widget? sizeItemBuilder(BuildContext context, int index, Variant list) {
+  //   return InkWell(
+  //     onTap: () => _tapSize(index),
+  //     child: Container(
+  //       margin: const EdgeInsets.only(right: 10.0),
+  //       clipBehavior: Clip.hardEdge,
+  //       decoration: BoxDecoration(
+  //           borderRadius: BorderRadius.circular(30),
+  //           color: _isClickSizeIndex == index
+  //               ? Color.fromARGB(255, 193, 222, 245)
+  //               : Colors.blueGrey),
+  //       width: 30,
+  //       child: Center(
+  //           child: NornalText(
+  //               text: lis,
+  //               size: 14,
+  //               color: Colors.white)),
+  //     ),
+  //   );
+  // }
 
   Widget congigureProductStock(Variant variant) {
     return BlocBuilder<CounterCubit, int>(

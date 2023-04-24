@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -51,24 +50,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static const platform = MethodChannel('samples.flutter.dev/battery');
+  static const platform = MethodChannel('samples.flutter.dev/string');
 
   // Get battery level.
-  String _batteryLevel = 'Unknown battery level.';
+  String _message = 'Unknown message';
 
-  Future<String> _getBatteryLevel() async {
-    String batteryLevel;
+  @override
+  void initState() {
+    super.initState();
+
+    platform.setMethodCallHandler((call) {
+      if (call.method == 'getString') {
+        final String result = call.arguments['message'];
+        print('get message from iOS - $result');
+      }
+      return Future.value();
+    });
+  }
+
+  Future<void> _getMessageFromNative() async {
+    String message;
     try {
-      batteryLevel = 'Battery level at ${await platform.invokeMethod('getBatteryLevel')} % .';
+      final String result = await platform.invokeMethod('getString');
+      message = 'get message from iOS - $result.';
     } on PlatformException catch (e) {
-      batteryLevel = "Failed to get battery level: '${e.message}'.";
+      message = "Failed to get message: '${e.message}'.";
     }
 
     setState(() {
-      _batteryLevel = batteryLevel;
+      _message = message;
+      print(_message);
     });
-
-    return batteryLevel;
   }
 
   @override
@@ -79,12 +91,10 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: () {
-                _getBatteryLevel();
-              },
+              onPressed: _getMessageFromNative,
               child: const Text('Get Battery Level'),
             ),
-            Text(_batteryLevel),
+            Text(_message),
           ],
         ),
       ),

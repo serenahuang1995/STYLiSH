@@ -55,19 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
   // Get battery level.
   String _message = 'Unknown message';
 
-  @override
-  void initState() {
-    super.initState();
-
-    platform.setMethodCallHandler((call) {
-      if (call.method == 'getString') {
-        final String result = call.arguments['message'];
-        print('get message from iOS - $result');
-      }
-      return Future.value();
-    });
-  }
-
   Future<void> _getMessageFromNative() async {
     String message;
     try {
@@ -92,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             ElevatedButton(
               onPressed: _getMessageFromNative,
-              child: const Text('Get Battery Level'),
+              child: const Text('Get Message'),
             ),
             Text(_message),
           ],

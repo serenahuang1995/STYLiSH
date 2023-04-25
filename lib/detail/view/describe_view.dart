@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
 import 'dart:developer';
-
+// import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:stylish/detail/cubit/product_cubit.dart';
 import 'package:stylish/share/custom_text.dart';
@@ -23,13 +24,20 @@ class DescribeView extends StatefulWidget {
 }
 
 class _DescribeViewState extends State<DescribeView> {
-  // FlutterTappay payer = FlutterTappay();
   late final Product product;
   late final double width;
   late PageController _pageController;
+  final TextEditingController _cardNumberController = TextEditingController();
+  final TextEditingController _monthController = TextEditingController();
+  final TextEditingController _yearController = TextEditingController();
+  final TextEditingController _ccvController = TextEditingController();
+
+  // static const platform = MethodChannel('tappay');
+
   int _count = 1;
   int _isClickColorIndex = 0;
   int _isClickSizeIndex = 0;
+  String _result = '尚未付款成功';
 
   @override
   void initState() {
@@ -38,6 +46,26 @@ class _DescribeViewState extends State<DescribeView> {
     width = widget.width;
     _pageController = PageController(initialPage: _isClickColorIndex);
   }
+
+  // Future<void> makePayment(
+  //     String cardNumber, String month, String year, String ccv) async {
+  //   try {
+  //     final Map<String, dynamic> paymentParams = {
+  //       'cardNumber': cardNumber,
+  //       'dueYear': year,
+  //       'dueMonth': month,
+  //       'ccv': ccv,
+  //     };
+  //   final String result = await platform.invokeMethod('getTapPayToken', paymentParams);
+  //     // 使用Token進行付款
+  //   } on PlatformException catch (e) {
+  //     // 處理異常
+  //   }
+
+    // setState(() {
+    //   _result = '結果 - ${result}';
+    // });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +169,9 @@ class _DescribeViewState extends State<DescribeView> {
             width: width,
             height: 50,
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                showDialog(context: context, builder: builder);
+              },
               child: (_count == product.variants[_isClickSizeIndex].stock)
                   ? BoldText(text: '已達庫存上限', size: 20, color: Colors.white)
                   : BoldText(text: '購買', size: 20, color: Colors.white),
@@ -161,6 +191,96 @@ class _DescribeViewState extends State<DescribeView> {
           color: Colors.black,
         ),
       ],
+    );
+  }
+
+  Widget builder(BuildContext context) {
+    return Dialog(
+      // backgroundColor: Colors.green,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
+            width: 400,
+            child: Column(children: [
+              Row(
+                children: [
+                  Text('卡號'),
+                  SizedBox(width: 10.0),
+                  Expanded(
+                    child: TextField(
+                      controller: _cardNumberController,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 10.0),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('有效期限'),
+                  SizedBox(width: 10.0),
+                  Expanded(
+                    child: TextField(
+                      controller: _monthController,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10.0),
+                  Expanded(
+                    flex: 1,
+                    child: TextField(
+                      controller: _yearController,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 10.0),
+              Row(
+                children: [
+                  Text('安全碼'),
+                  SizedBox(width: 10.0),
+                  Expanded(
+                    child: TextField(
+                      controller: _ccvController,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 10.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        log(_cardNumberController.text);
+                      },
+                      child: Text('取消')),
+                  SizedBox(width: 20.0),
+                  ElevatedButton(onPressed: () {}, child: Text('確定')),
+                ],
+              ),
+              SizedBox(height: 20.0),
+              Center(child: Text(_result))
+            ]),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -232,7 +352,10 @@ extension DescribeViewExtension on _DescribeViewState {
   }
 
   Widget configureProductSize(Product product) {
-    final List<Variant> list = product.variants.where((variant) => variant.color_code == product.colors[_isClickColorIndex].code ).toList();
+    final List<Variant> list = product.variants
+        .where((variant) =>
+            variant.color_code == product.colors[_isClickColorIndex].code)
+        .toList();
     log(list.toString());
     return Row(
       // ignore: prefer_const_literals_to_create_immutables
@@ -259,53 +382,30 @@ extension DescribeViewExtension on _DescribeViewState {
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemCount: list.length,
-              itemBuilder: (BuildContext context, int index)
-              {
-                 return InkWell(
-      onTap: () => _tapSize(index),
-      child: Container(
-        margin: const EdgeInsets.only(right: 10.0),
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            color: _isClickSizeIndex == index
-                ? Color.fromARGB(255, 193, 222, 245)
-                : Colors.blueGrey),
-        width: 30,
-        child: Center(
-            child: NornalText(
-                text: list[index].size,
-                size: 14,
-                color: Colors.white)),
-      ),
-    );
-              }
-              ),
+              itemBuilder: (BuildContext context, int index) {
+                return InkWell(
+                  onTap: () => _tapSize(index),
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 10.0),
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: _isClickSizeIndex == index
+                            ? Color.fromARGB(255, 193, 222, 245)
+                            : Colors.blueGrey),
+                    width: 30,
+                    child: Center(
+                        child: NornalText(
+                            text: list[index].size,
+                            size: 14,
+                            color: Colors.white)),
+                  ),
+                );
+              }),
         )
       ],
     );
   }
-
-  // Widget? sizeItemBuilder(BuildContext context, int index, Variant list) {
-  //   return InkWell(
-  //     onTap: () => _tapSize(index),
-  //     child: Container(
-  //       margin: const EdgeInsets.only(right: 10.0),
-  //       clipBehavior: Clip.hardEdge,
-  //       decoration: BoxDecoration(
-  //           borderRadius: BorderRadius.circular(30),
-  //           color: _isClickSizeIndex == index
-  //               ? Color.fromARGB(255, 193, 222, 245)
-  //               : Colors.blueGrey),
-  //       width: 30,
-  //       child: Center(
-  //           child: NornalText(
-  //               text: lis,
-  //               size: 14,
-  //               color: Colors.white)),
-  //     ),
-  //   );
-  // }
 
   Widget congigureProductStock(Variant variant) {
     return BlocBuilder<CounterCubit, int>(
@@ -344,7 +444,7 @@ extension DescribeViewExtension on _DescribeViewState {
               ),
             ),
             SizedBox(
-                width: 200,
+                width: 150,
                 child: NornalText(
                   text: '$state',
                   size: 16,
